@@ -31,6 +31,12 @@ class Severity(str, Enum):
     def __lt__(self, other):
         return self._order() < other._order()
 
+    def __gt__(self, other):
+        return self._order() > other._order()
+
+    def __ge__(self, other):
+        return self._order() >= other._order()
+
 
 @dataclass
 class Finding:
@@ -140,7 +146,7 @@ class AuditReport:
         lines = [
             "# Statistical Audit Report", "",
             f"**Source:** {self.source}", f"**Total findings:** {len(self.findings)}", "",
-            "| Severity | Count |", "|----------|-------|]",
+            "| Severity | Count |", "|----------|-------|",
             f"| ERROR    | {s['ERROR']} |",
             f"| WARNING  | {s['WARNING']} |",
             f"| INFO     | {s['INFO']} |", "",
