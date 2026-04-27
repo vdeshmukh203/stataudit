@@ -1,18 +1,48 @@
 """
-stataudit: Automated statistical reporting audit tool for ML papers.
+stataudit: Automated statistical reporting audit tool for academic manuscripts.
 
-Parses PDF or LaTeX source of machine learning papers and audits reported
-statistical claims: checks for missing confidence intervals, verifies that
-reported metrics are consistent across tables and text, flags absent baseline
-comparisons, and detects common statistical reporting errors following the
-ML reproducibility checklist.
+Scans plain-text (and LaTeX / Markdown) manuscripts for common statistical
+reporting errors: missing confidence intervals, absent effect sizes and degrees
+of freedom, over-precise p-values, underpowered samples, and more.
+
+Quick start::
+
+    from stataudit import audit_text, AuditReport
+
+    findings = audit_text("The result was significant (t = 3.2, ns).")
+    report = AuditReport(source="example", findings=findings)
+    print(report.to_markdown())
+
+CLI::
+
+    stataudit manuscript.txt --format markdown -o report.md
+    stataudit --list-rules
+
+GUI::
+
+    stataudit-gui
 """
 
 __version__ = "0.1.0"
 __author__ = "Vaibhav Deshmukh"
 __license__ = "MIT"
 
-from .auditor import StatAuditor
-from .report import AuditReport
+from .core import (  # noqa: F401
+    AuditReport,
+    Finding,
+    Severity,
+    _RULES,
+    audit_file,
+    audit_text,
+)
+from .cli import main  # noqa: F401
 
-__all__ = ["StatAuditor", "AuditReport"]
+__all__ = [
+    "Severity",
+    "Finding",
+    "AuditReport",
+    "audit_text",
+    "audit_file",
+    "main",
+    "__version__",
+]

@@ -21,7 +21,11 @@ classifiers = [
 ]
 
 [project.scripts]
-stataudit = "stataudit:_cli"
+stataudit     = "stataudit.cli:main"
+stataudit-gui = "stataudit.gui:main"
 
-[tool.setuptools]
-py-modules = ["stataudit"]
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
