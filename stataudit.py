@@ -67,8 +67,8 @@ _RULES = [
      "Replace 'ns' with an exact p-value (e.g., p = .12)."),
     ("pvalue_over_precision", re.compile(r'\bp\s*=\s*\.?0{4,}\d+', re.IGNORECASE), Severity.INFO,
      "Extremely small p-values should be reported as p < .001."),
-    ("ci_level_missing", re.compile(r'\b(?:CI|confidence interval)\b(?!\s*\d)', re.IGNORECASE), Severity.WARNING,
-     "Specify the confidence level (e.g., 95% CI)."),
+    ("ci_level_missing", re.compile(r'\b(?:CI|confidence\s+interval)\b(?!\s*\d)', re.IGNORECASE), Severity.WARNING,
+     "Specify the confidence level and bounds (e.g., 95% CI [2.1, 4.3])."),
     ("t_test_df_missing", re.compile(r'\bt\s*=\s*[-+]?[\d.]+(?!\s*\()'), Severity.WARNING,
      "Include degrees of freedom: t(df) = value."),
     ("anova_missing_df", re.compile(r'\bF\s*=\s*[-+]?[\d.]+(?!\s*\()'), Severity.WARNING,
@@ -85,8 +85,8 @@ _RULES = [
      "Describe the outlier detection criterion."),
     ("missing_data", re.compile(r'\bmissing\s+(?:data|values?|cases?)\b', re.IGNORECASE), Severity.INFO,
      "Report proportion of missing data and imputation strategy."),
-    ("regression_r2_missing", re.compile(r'\bregress(?:ed|ion)\b(?![^.]*R.squared)', re.IGNORECASE), Severity.WARNING,
-     "Report R² alongside regression results."),
+    ("regression_r2_missing", re.compile(r'\bregress(?:ed|ion)\b(?![^.]*(?:R[\-\s]?squared|R²|adj\w*\s+R))', re.IGNORECASE), Severity.WARNING,
+     "Report R² (and adjusted R²) alongside regression results."),
     ("multiple_comparisons", re.compile(r'\b(?:bonferroni|FDR|false discovery|holm|benjamini)\b', re.IGNORECASE), Severity.INFO,
      "Verify the multiple-comparisons correction method is stated."),
     ("correlation_missing_n", re.compile(r'\br\s*=\s*[-+]?0?\.\d+\b', re.IGNORECASE), Severity.INFO,
@@ -224,6 +224,9 @@ def main(argv=None) -> int:
         print(output)
     return 1 if any(f.severity == Severity.ERROR for f in report.findings) else 0
 
+
+# Backward-compatible alias (pyproject.toml entry point for standalone-script usage)
+_cli = main
 
 if __name__ == "__main__":
     sys.exit(main())
