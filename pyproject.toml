@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stataudit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Statistical reporting auditor for p-values, effect sizes, and CIs in manuscripts"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -21,7 +21,8 @@ classifiers = [
 ]
 
 [project.scripts]
-stataudit = "stataudit:_cli"
+stataudit     = "stataudit:main"
+stataudit-gui = "stataudit_gui:main"
 
 [tool.setuptools]
-py-modules = ["stataudit"]
+py-modules = ["stataudit", "stataudit_gui"]
