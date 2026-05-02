@@ -1,12 +1,13 @@
 # stataudit
 
-Statistical reporting audit tool for scientific manuscripts.
+Statistical reporting audit tool for academic manuscripts.
 
-Checks reported statistical results — p-values, confidence intervals, effect
-sizes, sample sizes, and degrees of freedom — for internal consistency. Detects
-common reporting errors including impossible p-values, mismatched degrees of
-freedom, inconsistent sample sizes across tables, and violations of multiple
-testing corrections.
+Scans plain-text documents for common statistical reporting errors — missing
+confidence intervals, absent degrees of freedom, over-precise p-values,
+undisclosed outlier handling, and more — and produces structured reports in
+plain text, Markdown, or JSON.
+
+Zero external dependencies (stdlib only).
 
 ## Installation
 
@@ -14,45 +15,113 @@ testing corrections.
 pip install stataudit
 ```
 
-## Quick Start
+Or directly from source:
 
 ```bash
-# Audit a manuscript PDF
-stataudit check manuscript.pdf
-
-# Audit with HTML report output
-stataudit check manuscript.txt --format apa --report audit_report.html
+git clone https://github.com/vdeshmukh203/stataudit.git
+cd stataudit
+pip install -e .
 ```
+
+## Quick Start
+
+### Command line
+
+```bash
+# Audit a manuscript
+stataudit paper.txt
+
+# Filter to warnings and above, output Markdown
+stataudit paper.txt --severity WARNING --format markdown
+
+# Write report to file
+stataudit paper.txt --format json --output audit.json
+
+# List all detection rules
+stataudit --list-rules
+```
+
+### Graphical interface
+
+```bash
+stataudit-gui
+# or
+python stataudit_gui.py
+```
+
+The GUI provides:
+- Text editor with file-open and clipboard support
+- Colour-coded findings table (sortable by column)
+- Per-finding detail and suggestion panel
+- Full formatted report (text / Markdown / JSON)
+- One-click export of reports
+
+### Python API
 
 ```python
-from stataudit import StatAuditor, AuditReport
+from stataudit import audit_text, audit_file, AuditReport, Severity
 
-auditor = StatAuditor("manuscript.txt")
-report: AuditReport = auditor.run()
+# Audit a string
+findings = audit_text("The result was ns. We found t = 2.5.")
 
-for finding in report.findings:
-    print(finding.severity, finding.message, finding.location)
+for f in findings:
+    print(f.severity.value, f.rule, f.suggestion)
 
-report.save_html("audit_report.html")
+# Build a structured report
+report = AuditReport(source="paper.txt", findings=findings)
+print(report.to_markdown())
+print(report.to_json())
+
+# Audit a file, report only warnings and errors
+from pathlib import Path
+findings = audit_file(Path("paper.txt"), min_severity=Severity.WARNING)
 ```
 
-## Features
+## Detection rules
 
-- Extracts statistical values from plain text and PDF manuscripts
-- Checks p-values against reported test statistics and degrees of freedom
-- Detects GRIM and SPRITE violations for integer-constrained statistics
-- Flags inconsistent sample sizes across tables and sections
-- Outputs machine-readable JSON or human-readable HTML reports
-- Supports APA, MLA, and Vancouver citation style contexts
+| Rule | Severity | What it flags |
+|------|----------|---------------|
+| `pvalue_exact` | INFO | Exact p-values — verify precision |
+| `pvalue_ns` | WARNING | "ns" instead of exact p-value |
+| `pvalue_over_precision` | INFO | p-values with ≥ 4 leading zeros (use p < .001) |
+| `ci_level_missing` | WARNING | CI/confidence interval without a % level |
+| `t_test_df_missing` | WARNING | `t = value` without degrees of freedom |
+| `anova_missing_df` | WARNING | `F = value` without degrees of freedom |
+| `sample_size_small` | WARNING | N < 30 |
+| `over_precision` | INFO | Numbers with > 4 decimal places |
+| `one_tailed` | WARNING | One-tailed tests (require justification) |
+| `nhst_only` | INFO | Significance language without effect sizes |
+| `outlier_handling` | INFO | Outlier mentions without detection criterion |
+| `missing_data` | INFO | Missing-data mentions without rate/strategy |
+| `regression_r2_missing` | WARNING | Regression without R² |
+| `multiple_comparisons` | INFO | Multiple-comparison corrections |
+| `correlation_missing_n` | INFO | Correlation coefficient without sample size |
+| `effect_size_check` | INFO | Effect size measures — verify labelling |
 
-## Documentation
+Run `stataudit --list-rules` for the full list with suggestions.
 
-See `docs/` for the full API reference and a catalogue of detectable error types.
+## Output formats
+
+`--format text` (default) — plain-text report, one finding per block.  
+`--format markdown` — Markdown with severity sections; paste into GitHub Issues.  
+`--format json` — machine-readable; use for downstream processing or CI gates.
+
+## Exit codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Audit complete; no ERROR-level findings |
+| `1` | One or more ERROR-level findings detected |
 
 ## Citation
 
-If you use `stataudit` in your research, please cite the associated JOSS paper
-(under review).
+If you use stataudit in published research, please cite the associated JOSS
+paper (under review):
+
+```
+Deshmukh, V. (2026). stataudit: A Python tool for automated statistical
+reporting audits in machine learning papers. Journal of Open Source Software.
+```
 
 ## License
 
