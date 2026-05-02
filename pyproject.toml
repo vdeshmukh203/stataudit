@@ -21,7 +21,11 @@ classifiers = [
 ]
 
 [project.scripts]
-stataudit = "stataudit:_cli"
+stataudit     = "stataudit:main"
+stataudit-gui = "stataudit_gui:main"
 
 [tool.setuptools]
-py-modules = ["stataudit"]
+py-modules = ["stataudit", "stataudit_gui"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
