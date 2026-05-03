@@ -4,24 +4,37 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stataudit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Statistical reporting auditor for p-values, effect sizes, and CIs in manuscripts"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [{name = "Vaibhav Deshmukh", email = "vdeshmukh203@gmail.com"}]
 requires-python = ">=3.8"
-keywords = ["statistics", "audit", "p-value", "reproducibility", "apa", "scientific-writing"]
+keywords = [
+    "statistics", "audit", "p-value", "reproducibility",
+    "apa", "scientific-writing", "effect-size",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
     "Topic :: Text Processing",
 ]
 
 [project.scripts]
-stataudit = "stataudit:_cli"
+stataudit     = "stataudit.cli:main"
+stataudit-gui = "stataudit.gui:launch"
 
-[tool.setuptools]
-py-modules = ["stataudit"]
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
