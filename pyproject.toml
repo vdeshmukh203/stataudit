@@ -10,18 +10,29 @@ readme = "README.md"
 license = {file = "LICENSE"}
 authors = [{name = "Vaibhav Deshmukh", email = "vdeshmukh203@gmail.com"}]
 requires-python = ">=3.8"
-keywords = ["statistics", "audit", "p-value", "reproducibility", "apa", "scientific-writing"]
+keywords = [
+    "statistics", "audit", "p-value", "reproducibility",
+    "apa", "scientific-writing", "machine-learning",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
     "Topic :: Text Processing",
 ]
 
 [project.scripts]
-stataudit = "stataudit:_cli"
+stataudit = "stataudit.cli:main"
 
-[tool.setuptools]
-py-modules = ["stataudit"]
+[project.gui-scripts]
+stataudit-gui = "stataudit.gui:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
