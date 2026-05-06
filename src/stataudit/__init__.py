@@ -1,18 +1,31 @@
 """
-stataudit: Automated statistical reporting audit tool for ML papers.
+stataudit: Automated statistical reporting audit tool for scientific manuscripts.
 
-Parses PDF or LaTeX source of machine learning papers and audits reported
-statistical claims: checks for missing confidence intervals, verifies that
-reported metrics are consistent across tables and text, flags absent baseline
-comparisons, and detects common statistical reporting errors following the
-ML reproducibility checklist.
+Audits reported statistical claims — p-values, confidence intervals, effect sizes,
+degrees of freedom, and sample sizes — for common reporting errors and omissions.
 """
 
 __version__ = "0.1.0"
 __author__ = "Vaibhav Deshmukh"
 __license__ = "MIT"
 
-from .auditor import StatAuditor
-from .report import AuditReport
+# The installed package is the single-file module stataudit.py at the repo root.
+# Re-export the public API from there so both `import stataudit` and
+# `from stataudit import ...` work identically.
+from stataudit import (  # noqa: F401  (re-exports)
+    AuditReport,
+    Finding,
+    Severity,
+    StatAuditor,
+    audit_file,
+    audit_text,
+)
 
-__all__ = ["StatAuditor", "AuditReport"]
+__all__ = [
+    "AuditReport",
+    "Finding",
+    "Severity",
+    "StatAuditor",
+    "audit_file",
+    "audit_text",
+]
